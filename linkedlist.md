@@ -1,5 +1,4 @@
-Linked List in JavaScript — Quick Revision MP3 Script
-
+Linked List in JavaScript — Quick Revision
 Linked list is a linear data structure made of nodes.
 
 
