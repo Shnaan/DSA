@@ -1,0 +1,764 @@
+
+Understanding Doubly Linked Lists in JavaScript
+
+## 2) Goal
+
+Learn what a doubly linked list is, how it differs from a singly linked list, and how to build and use one in JavaScript.
+
+## 3) Big Idea
+
+A **doubly linked list** is a linear data structure made of **nodes**.
+
+Each node stores:
+
+* a **value**
+* a reference to the **next** node
+* a reference to the **previous** node
+
+This means you can move:
+
+* forward
+* backward
+
+That is the main difference from a singly linked list.
+
+---
+
+## 4) Why This Matters
+
+Doubly linked lists are important because they help you understand:
+
+* two-way node connections
+* efficient insertion and deletion in some cases
+* how navigation can work in both directions
+* how structures like browser history or undo-redo systems can be designed
+
+They also appear in technical interviews and improve your data structure thinking.
+
+---
+
+## 5) Real-Life Analogy
+
+Imagine train cars connected together.
+
+Each car knows:
+
+* which car is in front of it
+* which car is behind it
+
+So you can move:
+
+* forward through the train
+* backward through the train
+
+That is how a doubly linked list works.
+
+---
+
+## 6) Main Concepts
+
+### A) Node
+
+A node in a doubly linked list usually has:
+
+* `value`
+* `next`
+* `prev`
+
+Example idea:
+
+```javascript
+{
+  value: 10,
+  next: null,
+  prev: null
+}
+```
+
+* `value` stores the data
+* `next` points to the next node
+* `prev` points to the previous node
+
+---
+
+### B) Head
+
+The **head** is the first node in the list.
+
+Its `prev` is usually `null`.
+
+---
+
+### C) Tail
+
+The **tail** is the last node in the list.
+
+Its `next` is usually `null`.
+
+---
+
+### D) Two-Way Traversal
+
+In a doubly linked list, you can move:
+
+* from head to tail using `next`
+* from tail to head using `prev`
+
+This is a major advantage over a singly linked list.
+
+---
+
+## 7) Singly vs Doubly Linked List
+
+| Feature             | Singly Linked List | Doubly Linked List |
+| ------------------- | ------------------ | ------------------ |
+| Node stores         | value, next        | value, next, prev  |
+| Move forward        | Yes                | Yes                |
+| Move backward       | No                 | Yes                |
+| Memory use          | Less               | More               |
+| Delete a known node | Harder             | Easier             |
+| Complexity of links | Simpler            | More complex       |
+
+### Important idea
+
+A doubly linked list gives more flexibility, but each node needs extra memory for the `prev` reference.
+
+---
+
+## 8) Visual Example
+
+Suppose we have:
+
+```javascript
+null <- 10 <-> 20 <-> 30 -> null
+```
+
+This means:
+
+* `10` is the head
+* `30` is the tail
+* each middle node connects in both directions
+
+Node `20` points:
+
+* forward to `30`
+* backward to `10`
+
+---
+
+## 9) Building a Node in JavaScript
+
+```javascript
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+    this.prev = null;
+  }
+}
+```
+
+### Explanation
+
+Each new node starts with:
+
+* a value
+* no next node yet
+* no previous node yet
+
+---
+
+## 10) Building a Doubly Linked List Class
+
+```javascript
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+    this.prev = null;
+  }
+}
+
+class DoublyLinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
+}
+```
+
+### What this stores
+
+* `head`: first node
+* `tail`: last node
+* `length`: number of nodes
+
+---
+
+## 11) Append to the End
+
+### Method: `append(value)`
+
+This adds a new node at the end.
+
+```javascript
+append(value) {
+  const newNode = new Node(value);
+
+  if (!this.head) {
+    this.head = newNode;
+    this.tail = newNode;
+  } else {
+    newNode.prev = this.tail;
+    this.tail.next = newNode;
+    this.tail = newNode;
+  }
+
+  this.length++;
+}
+```
+
+### What happens
+
+If the list is empty:
+
+* new node becomes both head and tail
+
+If the list is not empty:
+
+* new node’s `prev` points to old tail
+* old tail’s `next` points to new node
+* tail becomes new node
+
+---
+
+## 12) Prepend to the Beginning
+
+### Method: `prepend(value)`
+
+This adds a node at the beginning.
+
+```javascript
+prepend(value) {
+  const newNode = new Node(value);
+
+  if (!this.head) {
+    this.head = newNode;
+    this.tail = newNode;
+  } else {
+    newNode.next = this.head;
+    this.head.prev = newNode;
+    this.head = newNode;
+  }
+
+  this.length++;
+}
+```
+
+### What happens
+
+If the list is empty:
+
+* new node becomes both head and tail
+
+If the list already has nodes:
+
+* new node points forward to current head
+* current head points backward to new node
+* head becomes new node
+
+---
+
+## 13) Print Forward
+
+```javascript
+printForward() {
+  let current = this.head;
+  let values = [];
+
+  while (current) {
+    values.push(current.value);
+    current = current.next;
+  }
+
+  console.log(values.join(" <-> "));
+}
+```
+
+### Example
+
+If the list contains:
+
+```javascript
+10, 20, 30
+```
+
+Output:
+
+```javascript
+10 <-> 20 <-> 30
+```
+
+---
+
+## 14) Print Backward
+
+```javascript
+printBackward() {
+  let current = this.tail;
+  let values = [];
+
+  while (current) {
+    values.push(current.value);
+    current = current.prev;
+  }
+
+  console.log(values.join(" <-> "));
+}
+```
+
+### Example
+
+If the list contains:
+
+```javascript
+10, 20, 30
+```
+
+Backward output:
+
+```javascript
+30 <-> 20 <-> 10
+```
+
+This shows the extra power of a doubly linked list.
+
+---
+
+## 15) Remove from the Beginning
+
+### Method: `removeHead()`
+
+```javascript
+removeHead() {
+  if (!this.head) return null;
+
+  const removedValue = this.head.value;
+
+  if (this.length === 1) {
+    this.head = null;
+    this.tail = null;
+  } else {
+    this.head = this.head.next;
+    this.head.prev = null;
+  }
+
+  this.length--;
+  return removedValue;
+}
+```
+
+### What happens
+
+If there is only one node:
+
+* head and tail both become `null`
+
+Otherwise:
+
+* move head to the next node
+* clear the new head’s `prev`
+
+---
+
+## 16) Remove from the End
+
+### Method: `removeTail()`
+
+```javascript
+removeTail() {
+  if (!this.tail) return null;
+
+  const removedValue = this.tail.value;
+
+  if (this.length === 1) {
+    this.head = null;
+    this.tail = null;
+  } else {
+    this.tail = this.tail.prev;
+    this.tail.next = null;
+  }
+
+  this.length--;
+  return removedValue;
+}
+```
+
+### Important idea
+
+This is easier than in a singly linked list because the tail already knows its previous node.
+
+That is one of the main advantages of doubly linked lists.
+
+---
+
+## 17) Search for a Value
+
+```javascript
+contains(value) {
+  let current = this.head;
+
+  while (current) {
+    if (current.value === value) {
+      return true;
+    }
+    current = current.next;
+  }
+
+  return false;
+}
+```
+
+### Explanation
+
+Searching still usually starts from the head and moves node by node.
+
+Even though the list is doubly linked, general search is still **O(n)**.
+
+---
+
+## 18) Full Example
+
+```javascript
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+    this.prev = null;
+  }
+}
+
+class DoublyLinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
+
+  append(value) {
+    const newNode = new Node(value);
+
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      newNode.prev = this.tail;
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+
+    this.length++;
+  }
+
+  prepend(value) {
+    const newNode = new Node(value);
+
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      newNode.next = this.head;
+      this.head.prev = newNode;
+      this.head = newNode;
+    }
+
+    this.length++;
+  }
+
+  removeHead() {
+    if (!this.head) return null;
+
+    const removedValue = this.head.value;
+
+    if (this.length === 1) {
+      this.head = null;
+      this.tail = null;
+    } else {
+      this.head = this.head.next;
+      this.head.prev = null;
+    }
+
+    this.length--;
+    return removedValue;
+  }
+
+  removeTail() {
+    if (!this.tail) return null;
+
+    const removedValue = this.tail.value;
+
+    if (this.length === 1) {
+      this.head = null;
+      this.tail = null;
+    } else {
+      this.tail = this.tail.prev;
+      this.tail.next = null;
+    }
+
+    this.length--;
+    return removedValue;
+  }
+
+  contains(value) {
+    let current = this.head;
+
+    while (current) {
+      if (current.value === value) return true;
+      current = current.next;
+    }
+
+    return false;
+  }
+
+  printForward() {
+    let current = this.head;
+    let values = [];
+
+    while (current) {
+      values.push(current.value);
+      current = current.next;
+    }
+
+    console.log(values.join(" <-> "));
+  }
+
+  printBackward() {
+    let current = this.tail;
+    let values = [];
+
+    while (current) {
+      values.push(current.value);
+      current = current.prev;
+    }
+
+    console.log(values.join(" <-> "));
+  }
+}
+
+const list = new DoublyLinkedList();
+
+list.append(10);
+list.append(20);
+list.append(30);
+
+list.printForward();   // 10 <-> 20 <-> 30
+list.printBackward();  // 30 <-> 20 <-> 10
+
+list.prepend(5);
+list.printForward();   // 5 <-> 10 <-> 20 <-> 30
+
+console.log(list.contains(20)); // true
+console.log(list.contains(99)); // false
+
+console.log(list.removeHead()); // 5
+console.log(list.removeTail()); // 30
+
+list.printForward();   // 10 <-> 20
+list.printBackward();  // 20 <-> 10
+```
+
+---
+
+## 19) Time Complexity
+
+| Operation             | Time Complexity |
+| --------------------- | --------------- |
+| Add at beginning      | O(1)            |
+| Add at end            | O(1)            |
+| Remove from beginning | O(1)            |
+| Remove from end       | O(1)            |
+| Search                | O(n)            |
+| Access by index       | O(n)            |
+
+### Why remove from end is O(1)
+
+Because the tail has a direct `prev` reference.
+
+That avoids searching for the node before the tail.
+
+---
+
+## 20) Strengths of Doubly Linked Lists
+
+Doubly linked lists are useful when:
+
+* you need to move in both directions
+* you want easier deletion from the end
+* you want to remove a node more easily when you already have a reference to it
+* you are modeling history, navigation, or undo-redo behavior
+
+---
+
+## 21) Weaknesses of Doubly Linked Lists
+
+Doubly linked lists have some disadvantages:
+
+* each node uses more memory
+* code is more complex than singly linked lists
+* more pointer updates are required
+* bugs are easier to make because both `next` and `prev` must stay correct
+
+---
+
+## 22) Important Interview Insight
+
+A doubly linked list is often better than a singly linked list when:
+
+* backward traversal matters
+* deleting from the tail should be efficient
+* node removal should be easier once the node is known
+
+But it costs more memory.
+
+So the trade-off is:
+
+**More flexibility, more memory, more complexity**
+
+---
+
+## 23) Common Mistakes
+
+### Mistake 1
+
+Forgetting to update both `next` and `prev`
+
+### Mistake 2
+
+Updating one direction but not the other
+
+### Mistake 3
+
+Forgetting to reset `head.prev` to `null`
+
+### Mistake 4
+
+Forgetting to reset `tail.next` to `null`
+
+### Mistake 5
+
+Not handling the single-node list case
+
+These mistakes can break the structure of the list.
+
+---
+
+## 24) Real-World Examples
+
+Doubly linked lists can be used in:
+
+* browser back and forward history
+* music playlist previous/next navigation
+* undo and redo systems
+* image gallery navigation
+* some cache implementations
+
+---
+
+## 25) Practice Questions
+
+### Easy
+
+1. What extra reference does a doubly linked list node have compared to a singly linked list?
+2. What does `prev` mean?
+3. What is usually stored in `head.prev`?
+
+### Medium
+
+4. Why is removing the tail easier in a doubly linked list?
+5. Why does a doubly linked list use more memory?
+6. Why is searching still O(n)?
+
+### Coding
+
+7. Write a method to return the list as an array forward.
+8. Write a method to return the list as an array backward.
+9. Write a method to get the first value and last value.
+
+---
+
+## 26) Mini Challenge
+
+Create a method called `toArrayForward()`.
+
+### Expected behavior
+
+If the list is:
+
+```javascript
+5 <-> 10 <-> 15
+```
+
+Then:
+
+```javascript
+list.toArrayForward();
+```
+
+Should return:
+
+```javascript
+[5, 10, 15]
+```
+
+### Solution
+
+```javascript
+toArrayForward() {
+  let current = this.head;
+  let result = [];
+
+  while (current) {
+    result.push(current.value);
+    current = current.next;
+  }
+
+  return result;
+}
+```
+
+---
+
+## 27) Summary
+
+A **doubly linked list**:
+
+* is made of nodes
+* each node stores a value, a next reference, and a previous reference
+* has a head and a tail
+* supports forward and backward movement
+* makes some insertions and deletions easier
+* uses more memory than a singly linked list
+
+---
+
+## 28) Simple Memory Hook
+
+**Singly linked list = one-way road**
+**Doubly linked list = two-way road**
+
+---
+
+## 29) Homework
+
+Build a doubly linked list with these methods:
+
+* `append`
+* `prepend`
+* `removeHead`
+* `removeTail`
+* `contains`
+* `printForward`
+* `printBackward`
+
+Then test it with at least 5 values.
