@@ -33,7 +33,7 @@ constructor(){
 }
 
     prepend(value){
-        let newNode = new Node;
+        let newNode = new Node(value);
     if(!this.head){
 
         this.head = newNode;
